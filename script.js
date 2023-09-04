@@ -1,48 +1,35 @@
-const calculatorObject = {}
+const buttonData = [
+  "0",
+  "1",
+  "2",
+  "3",
+  "4",
+  "5",
+  "6",
+  "7",
+  "8",
+  "9",
+  "+",
+  "-",
+  "*",
+  "/",
+  "C",
+  "FUN",
+]
 
-const add = function (num, num2) {
-  return num + num2
+const buttons = []
+
+for (let i = 0; i < buttonData.length; i++) {
+  const label = buttonData[i]
+  const value = label === "C" ? "" : label
+
+  const button = document.createElement("button")
+  button.textContent = label
+  button.value = value
+  buttons.push(button)
 }
 
-const subtract = function (num, num2) {
-  return num - num2
-}
-
-const sum = function (num, num2) {
-  if (Array.isArray(num) && num.length > 0) {
-    return num.reduce((total, current) => total + current)
-  }
-
-  if (num == "") {
-    return 0
-  } else if (num2 === undefined) {
-    return parseInt(num.toString())
-  } else return num + num2
-}
-
-const multiply = function (num, num2) {
-  if (Array.isArray(num) && num.length > 0) {
-    return num.reduce((total, current) => total * current)
-  }
-
-  return num * num2
-}
-const power = function (num, num2) {
-  return num ** num2
-}
-
-const factorial = function (num) {
-  if (num === 0) {
-    return 1
-  } else if (num === 1) {
-    return num
-  }
-  {
-    let finalNum = 1
-
-    for (i = num; i > 1; i--) {
-      finalNum *= i
-    }
-    return finalNum
-  }
-}
+const calculator = document.querySelector(".calculator")
+buttons.forEach((button) => {
+  calculator.appendChild(button)
+})
