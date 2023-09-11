@@ -14,13 +14,13 @@ const buttonData = [
   "*",
   "/",
   "C",
-  "FUN",
+  "=",
 ]
 
 const calculator = document.querySelector(".calculator")
 
 const display = document.createElement("input")
-display.class = "display"
+display.className = "display"
 display.type = "text"
 calculator.appendChild(display)
 
@@ -34,13 +34,13 @@ calculator.addEventListener("click", (event) => {
 
     if (value === "=") {
       evaluateExpression(numberStack)
-      expressionArray.length = 0
+      numberStack.length = 0
     } else if (value === "C") {
       numberStack.length = 0
       display.value = ""
     } else {
-      expressionArray.push(value)
-      display.value = expressionArray.join(" ")
+      numberStack.push(value)
+      display.value = numberStack.join(" ")
     }
   }
 })
@@ -49,11 +49,12 @@ function evaluateExpression(expression) {
   const operators = { "+": 1, "-": 1, "*": 2, "/": 2 }
 
   const operatorStack = []
+  const numberStack = []
 
   function performOperation() {
     const operator = operatorStack.pop()
-    const operand2 = stack.pop()
-    const operand1 = stack.pop()
+    const operand2 = numberStack.pop()
+    const operand1 = numberStack.pop()
 
     switch (operator) {
       case "+":
@@ -69,16 +70,18 @@ function evaluateExpression(expression) {
         break
 
       case "/":
-        if (operand !== 0) {
-          numberStack.push(operand1 + operand2)
+        if (operand2 !== 0) {
+          numberStack.push(operand1 / operand2)
         } else {
           display.value = "Error: division by zero"
+          numberStack.length = 0
           return
         }
 
         break
     }
   }
+
   for (const token of expression) {
     if (!operators[token]) {
       numberStack.push(parseFloat(token))
@@ -86,12 +89,19 @@ function evaluateExpression(expression) {
       while (
         operatorStack.length > 0 &&
         operators[operatorStack[operatorStack.length - 1]] >= operators[token]
-      ) {}
+      ) {
+        performOperation()
+      }
+      operatorStack.push(token)
     }
   }
+  while (operatorStack.length > 0) {
+    performOperation()
+  }
+  display.value = numberStack[0]
 }
 
-const expressionArray = []
+const buttons = []
 
 for (let i = 0; i < buttonData.length; i++) {
   const label = buttonData[i]
@@ -102,3 +112,7 @@ for (let i = 0; i < buttonData.length; i++) {
   button.value = value
   buttons.push(button)
 }
+
+buttons.forEach((button) => {
+  calculator.appendChild(button)
+})
